@@ -2,6 +2,7 @@ import Vue from 'vue'
 import 'es6-promise/auto'
 import { createApp } from './app'
 import ProgressBar from './components/ProgressBar.vue'
+import VueLazyload from 'vue-lazyload'
 
 // global progress bar
 const bar = Vue.prototype.$bar = new Vue(ProgressBar).$mount()
@@ -21,6 +22,8 @@ Vue.mixin({
     }
   }
 })
+
+Vue.use(VueLazyload)
 
 const { app, router, store } = createApp()
 

@@ -1,0 +1,28 @@
+version: '2'
+services:
+  hnews:
+    container_name: hnews
+    # image: registry.heroku.com/visual-hacker-news/web
+    build: .
+    restart: always
+    # mem_limit: 2G
+    # memswap_limit: 0
+    command: 'node --harmony-async-await --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js'
+    working_dir: /usr/src/app
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      REDIS_URL: ${REDIS_URL}
+      THUMB_BASE_URL: ${THUMB_BASE_URL}
+    labels:
+        - "traefik.frontend.rule=Host:${DOMAIN}.${TLD}"
+        - "traefik.port=${PORT}"
+    # ports:
+    #   - '${PORT}:${PORT}'
+    # volumes: 
+    #   - ./fetchImages.js:/usr/src/app/fetchImages.js
+    #   - ./server.js:/usr/src/app/server.js
+networks:
+  default:
+    external:
+      name: mainframe_default

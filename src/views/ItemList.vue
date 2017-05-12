@@ -1,32 +1,29 @@
 <template>
   <div class="news-view">
-    <div class="news-list-nav">
-      <router-link v-if="page > 1" :to="'/' + type + '/' + (page - 1)">&lt; prev</router-link>
-      <a v-else class="disabled">&lt; prev</a>
-      <span>{{ page }}/{{ maxPage }}</span>
-      <router-link v-if="hasMore" :to="'/' + type + '/' + (page + 1)">more &gt;</router-link>
-      <a v-else class="disabled">more &gt;</a>
-    </div>
     <transition :name="transition">
-      <div class="news-list" :key="displayedPage" v-if="displayedPage > 0">
+      <div class="news-list" v-if="displayedPage > 0">
         <transition-group tag="ul" name="item">
           <item v-for="item in displayedItems" :key="item.id" :item="item">
           </item>
         </transition-group>
       </div>
     </transition>
+    <infinite-loading :on-infinite="loadItems" :next-page="page" :distance="750"></infinite-loading>
+    
   </div>
 </template>
 
 <script>
 import { watchList } from '../api'
 import Item from '../components/Item.vue'
+import InfiniteLoading from '../components/InfiniteLoading.vue'
 
 export default {
   name: 'item-list',
 
   components: {
-    Item
+    Item,
+    InfiniteLoading
   },
 
   props: {
@@ -35,7 +32,7 @@ export default {
 
   data () {
     return {
-      transition: 'slide-right',
+      transition: 'slide-up',
       displayedPage: Number(this.$store.state.route.params.page) || 1,
       displayedItems: this.$store.getters.activeItems
     }
@@ -43,7 +40,7 @@ export default {
 
   computed: {
     page () {
-      return Number(this.$store.state.route.params.page) || 1
+     return this.$store.state.activePage[this.type] || Number(this.$store.state.route.params.page) || 1
     },
     maxPage () {
       const { itemsPerPage, lists } = this.$store.state
@@ -71,87 +68,114 @@ export default {
     this.unwatchList()
   },
 
-  watch: {
-    page (to, from) {
-      this.loadItems(to, from)
-    }
-  },
+  // watch: {
+  //   page (to, from) {
+  //     this.loadItems(to, from)
+  //   }
+  // },
 
   methods: {
     loadItems (to = this.page, from = -1) {
       this.$bar.start()
-      this.$store.dispatch('FETCH_LIST_DATA', {
-        type: this.type
-      }).then(() => {
-        if (this.page < 0 || this.page > this.maxPage) {
-          this.$router.replace(`/${this.type}/1`)
-          return
-        }
-        this.transition = from === -1
-          ? null
-          : to > from ? 'slide-left' : 'slide-right'
-        this.displayedPage = to
-        this.displayedItems = this.$store.getters.activeItems
-        this.$bar.finish()
-      })
+      return new Promise((resolve, reject) => { 
+        this.$store.dispatch('FETCH_LIST_DATA', {
+        type: this.type,
+        page: to
+        }).then(() => {
+
+          if (!this.hasMore) { reject('We have reached teh end of the list'); return;}
+          if (this.page < 0 || this.page > this.maxPage) {
+            this.$router.replace(`/${this.type}/1`)
+            return
+          }
+          // this.transition = from === -1
+          //   ? null
+          //   : to > from ? 'slide-left' : 'slide-right'
+          this.displayedPage = to
+          this.displayedItems = this.$store.getters.activeItems
+          this.$bar.finish()
+          // this.$router.replace({ path: `/${this.type}/${this.page+1}`, hash: 'infinite' });
+
+
+          if (this.$store.getters.scrollPosition) {
+            const x=this.$store.getters.scrollPosition.x;
+            const y=this.$store.getters.scrollPosition.y;
+            console.log(this.$store.getters.scrollPosition);
+            this.$nextTick(function () {
+            console.log('window.scroll',x,y);
+            window.scroll(x,y);
+            this.$store.commit('SET_SCROLL', {
+                type: this.type,
+                scrollPosition: null
+              });
+            });
+          }
+          resolve();
+        })
+        .catch( error => reject(error));
+      });
     }
   }
 }
 </script>
 
-<style lang="stylus">
-.news-view
-  padding-top 45px
-
-.news-list-nav, .news-list
-  background-color #fff
-  border-radius 2px
-
-.news-list-nav
-  padding 15px 30px
-  position fixed
-  text-align center
-  top 55px
-  left 0
-  right 0
-  z-index 998
-  box-shadow 0 1px 2px rgba(0,0,0,.1)
-  a
-    margin 0 1em
-  .disabled
-    color #ccc
-
-.news-list
-  position absolute
-  margin 30px 0
-  width 100%
-  transition all .5s cubic-bezier(.55,0,.1,1)
-  ul
-    list-style-type none
-    padding 0
-    margin 0
-
-.slide-left-enter, .slide-right-leave-to
-  opacity 0
-  transform translate(30px, 0)
-
-.slide-left-leave-to, .slide-right-enter
-  opacity 0
-  transform translate(-30px, 0)
-
-.item-move, .item-enter-active, .item-leave-active
-  transition all .5s cubic-bezier(.55,0,.1,1)
-
-.item-enter
-  opacity 0
-  transform translate(30px, 0)
-
-.item-leave-active
-  position absolute
-  opacity 0
-  transform translate(30px, 0)
-
-@media (max-width 600px)
-  .news-list
-    margin 10px 0
+<style scoped>
+.news-view {
+  padding-top: 20px;
+}
+.news-list-nav {
+  background-color: #fff;
+  border-radius: 2px;
+}
+.news-list {
+  width: 100%;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.news-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-content: center;
+}
+.news-list ul li {
+  flex: 0 1 450px;
+  min-width: 1px;
+  margin: 10px;
+}
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translate(-30px, 0);
+}
+.item-move,
+.item-enter-active,
+.item-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.item-enter {
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+.item-leave-active {
+  position: absolute;
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+@media (max-width: 768px) {
+  .news-list {
+    margin: 10px 0;
+  }
+  .news-list ul li {
+    flex: 0 1 350px;
+    margin: 5px;
+  }
+}
 </style>

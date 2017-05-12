@@ -12,11 +12,13 @@
           {{ item.score }} points
           | by <router-link :to="'/user/' + item.by">{{ item.by }}</router-link>
           {{ item.time | timeAgo }} ago
+          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" class="vote">[ vote ]</a>
         </p>
       </div>
       <div class="item-view-comments">
         <p class="item-view-comments-header">
           {{ item.kids ? item.descendants + ' comments' : 'No comments yet.'}}
+          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" class="add-comment">[+] Add Comment</a>
           <spinner :show="loading"></spinner>
         </p>
         <ul v-if="!loading" class="comment-children">
@@ -85,6 +87,8 @@ function fetchComments (store, item) {
     }).then(() => Promise.all(item.kids.map(id => {
       return fetchComments(store, store.state.items[id])
     })))
+  } else {
+    return Promise.resolve();
   }
 }
 </script>
@@ -122,7 +126,12 @@ function fetchComments (store, item) {
   list-style-type none
   padding 0
   margin 0
-
+.add-comment
+  display block
+  float right
+.vote
+  display inline-block
+  margin-left 25px
 @media (max-width 600px)
   .item-view-header
     h1

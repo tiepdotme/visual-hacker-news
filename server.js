@@ -4,14 +4,14 @@ const LRU = require('lru-cache')
 const express = require('express')
 const favicon = require('serve-favicon')
 const compression = require('compression')
+const request = require('request')
 const resolve = file => path.resolve(__dirname, file)
 const { createBundleRenderer } = require('vue-server-renderer')
 
 const isProd = process.env.NODE_ENV === 'production'
 const useMicroCache = process.env.MICRO_CACHE !== 'false'
 const serverInfo =
-  `express/${require('express/package.json').version} ` +
-  `vue-server-renderer/${require('vue-server-renderer/package.json').version}`
+  `express/${require('express/package.json').version} `;
 
 const app = express()
 
@@ -46,6 +46,7 @@ if (isProd) {
   renderer = createRenderer(bundle, {
     clientManifest
   })
+  require('./fetchImages').run();
 } else {
   // In development: setup the dev server with watch and hot-reload,
   // and create a new renderer on bundle / index template update.
@@ -123,7 +124,18 @@ function render (req, res) {
     }
   })
 }
-
+app.use('/thumbnail/', (req, res) => {
+    const imgUrl = req.query.url;
+    if (!imgUrl) {
+        res.sendStatus(404);
+        return;
+    }
+    let imageUrl=process.env.THUMB_BASE_URL+req.originalUrl.split('/thumbnail/')[1];
+      req.pipe(request(imageUrl).on('error', (error) => {
+      res.sendStatus(404);
+      return;
+      })).pipe(res)
+});
 app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))
 })

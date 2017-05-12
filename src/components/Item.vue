@@ -1,28 +1,36 @@
 <template>
   <li class="news-item">
-    <span class="score">{{ item.score }}</span>
-    <span class="title">
-      <template v-if="item.url">
-        <a :href="item.url" target="_blank" rel="noopener">{{ item.title }}</a>
-        <span class="host"> ({{ item.url | host }})</span>
-      </template>
-      <template v-else>
-        <router-link :to="'/item/' + item.id">{{ item.title }}</router-link>
-      </template>
-    </span>
-    <br>
-    <span class="meta">
-      <span v-if="item.type !== 'job'" class="by">
-        by <router-link :to="'/user/' + item.by">{{ item.by }}</router-link>
+    <div class="img-container" :style="{backgroundColor:randomColor}">
+      <a :href="item.url" target="_blank" v-if="item.url">
+        <img v-lazy="imgUrl" src="/public/empty.png" :key="imgUrl" :alt="item.title ">
+      </a>
+    </div>
+    <div class="meta-container">
+      <span class="title">
+        <template v-if="item.url">
+          <span class="host"> ({{ item.url | host }})</span> <br> 
+          <a :href="item.url" target="_blank">{{ item.title }}</a> 
+          
+        </template>
+        <template v-else>
+          <router-link :to="'/item/' + item.id">{{ item.title }}</router-link>
+        </template>
       </span>
-      <span class="time">
-        {{ item.time | timeAgo }} ago
+      <br>
+      <span class="meta">
+        <span v-if="item.type !== 'job'" class="by">
+          by <router-link :to="'/user/' + item.by">{{ item.by }}</router-link>
+        </span>
+        <span class="time">
+          {{ item.time | timeAgo }} ago
+        </span>
+        <span v-if="item.type !== 'job'" class="comments-link">
+          | <router-link :to="'/item/' + item.id">{{ item.descendants }} comments</router-link>
+          | <span class="score">score: {{ item.score }}</span>
+        </span>
       </span>
-      <span v-if="item.type !== 'job'" class="comments-link">
-        | <router-link :to="'/item/' + item.id">{{ item.descendants }} comments</router-link>
-      </span>
-    </span>
-    <span class="label" v-if="item.type !== 'story'">{{ item.type }}</span>
+      <span class="label" v-if="item.type !== 'story'">{{ item.type }}</span>
+    </div>
   </li>
 </template>
 
@@ -32,6 +40,15 @@ import { timeAgo } from '../util/filters'
 export default {
   name: 'news-item',
   props: ['item'],
+  computed: {
+    imgUrl() {
+      return `/thumbnail/?url=${encodeURIComponent(this.item.url)}`;
+      // return `/thumbnail/?url=${encodeURIComponent(this.item.url)}&width=450&height=450&screen=1024&format=jpg`;
+    },
+    randomColor() {
+      return '#' + Math.floor(Math.random()*16777215).toString(16);
+    }
+  },
   // https://github.com/vuejs/vue/tree/dev/packages/vue-server-renderer#component-caching
   serverCacheKey: ({ item: { id, __lastUpdated, time }}) => {
     return `${id}::${__lastUpdated}::${timeAgo(time)}`
@@ -39,29 +56,75 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-.news-item
-  background-color #fff
-  padding 20px 30px 20px 80px
-  border-bottom 1px solid #eee
-  position relative
-  line-height 20px
-  .score
-    color #ff6600
-    font-size 1.1em
-    font-weight 700
-    position absolute
-    top 50%
-    left 0
-    width 80px
-    text-align center
-    margin-top -10px
-  .meta, .host
-    font-size .85em
-    color #828282
-    a
-      color #828282
-      text-decoration underline
-      &:hover
-        color #ff6600
+<style scoped>
+.news-item {
+  background-color: #000;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  line-height: 20px;
+  border: 10px solid #fff;
+}
+.meta-container {
+  padding: 10px 20px;
+  padding: 10px 20px;
+  background-color: rgba(0,0,0,0.9);
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+}
+.meta-container .title a {
+  font-size: 18px;
+  line-height: 1.2em;
+  font-weight: bold;
+  color: #FFF;
+}
+.img-container {
+  width: 450px;
+  height: 450px;
+}
+.img-container img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 50px;
+  opacity: 0.8;
+  transition: opacity 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+.img-container img:hover {
+  opacity: 1;
+}
+.score {
+  color: #f60;
+  font-size: 0.8em;
+  text-align: center;
+}
+.meta,
+.host {
+  font-size: 0.85em;
+  color: #999;
+}
+.meta a,
+.host a {
+  color: #999;
+  text-decoration: underline;
+}
+.news-item .meta a:hover,
+.news-item .host a:hover {
+  color: #f60;
+}
+img[lazy=loading] {
+  opacity: 0;
+}
+img[lazy=error] {
+  opacity: 0.8; 
+}
+img[lazy=loaded] {
+  /*your style here*/
+}
+@media (max-width: 768px) {
+  .img-container {
+    width: 350px;
+    height: 350px;
+  }
+}
 </style>

@@ -6,8 +6,9 @@ import {
 
 export default {
   // ensure data for rendering given list type
-  FETCH_LIST_DATA: ({ commit, dispatch, state }, { type }) => {
+  FETCH_LIST_DATA: ({ commit, dispatch, state }, { type, page }) => {
     commit('SET_ACTIVE_TYPE', { type })
+    if (page) commit('SET_ACTIVE_PAGE', { page })
     return fetchIdsByType(type)
       .then(ids => commit('SET_LIST', { type, ids }))
       .then(() => dispatch('ENSURE_ACTIVE_ITEMS'))
