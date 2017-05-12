@@ -19,7 +19,7 @@ Object.keys(filters).forEach(key => {
 export function createApp () {
   // create store and router instances
   const store = createStore()
-  const router = createRouter()
+  const router = createRouter(store)
 
   // sync the router with the vuex store.
   // this registers `store.state.route`

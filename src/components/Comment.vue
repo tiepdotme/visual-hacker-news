@@ -3,6 +3,7 @@
     <div class="by">
       <router-link :to="'/user/' + comment.by">{{ comment.by }}</router-link>
       {{ comment.time | timeAgo }} ago
+      <a :href="getReplyUrl" target="_blank" class="reply">reply</a>
     </div>
     <div class="text" v-html="comment.text"></div>
     <div class="toggle" :class="{ open }" v-if="comment.kids && comment.kids.length">
@@ -30,7 +31,10 @@ export default {
   computed: {
     comment () {
       return this.$store.state.items[this.id]
-    }
+    },
+    getReplyUrl () {
+      return `https://news.ycombinator.com/reply?id=${this.id}`;
+    },
   },
   methods: {
     pluralize: n => n + (n === 1 ? ' reply' : ' replies')
@@ -60,6 +64,9 @@ export default {
       color #ff6600
     pre
       white-space pre-wrap
+  .reply
+    margin-left 25px 
+    display inline-block
   .toggle
     background-color #fffbf2
     padding .3em .5em

@@ -10,6 +10,8 @@ export function createStore () {
   return new Vuex.Store({
     state: {
       activeType: null,
+      activePage: {/* [id: number]: Number */},
+      scrollPosition: {/* [id: string]: Number */},
       itemsPerPage: 20,
       items: {/* [id: number]: Item */},
       users: {/* [id: string]: User */},
