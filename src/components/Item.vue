@@ -42,7 +42,7 @@ export default {
   props: ['item'],
   computed: {
     imgUrl() {
-      return `https://hnews.xyz/thumbnail/?url=${encodeURIComponent(this.item.url)}`;
+      return `/thumbnail/?url=${encodeURIComponent(this.item.url)}`;
       // return `/thumbnail/?url=${encodeURIComponent(this.item.url)}&width=450&height=450&screen=1024&format=jpg`;
     },
     randomColor() {
