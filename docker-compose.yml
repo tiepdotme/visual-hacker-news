@@ -7,7 +7,7 @@ services:
     restart: always
     # mem_limit: 2G
     # memswap_limit: 0
-    command: 'node --harmony-async-await --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js'
+    command: 'node --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js'
     working_dir: /usr/src/app
     environment:
       PORT: ${PORT}
