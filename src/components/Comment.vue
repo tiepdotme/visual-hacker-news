@@ -3,7 +3,7 @@
     <div class="by">
       <router-link :to="'/user/' + comment.by">{{ comment.by }}</router-link>
       {{ comment.time | timeAgo }} ago
-      <a :href="getReplyUrl" target="_blank" class="reply">reply</a>
+      <a :href="getReplyUrl" target="_blank" rel="noopener" class="reply">reply</a>
     </div>
     <div class="text" v-html="comment.text"></div>
     <div class="toggle" :class="{ open }" v-if="comment.kids && comment.kids.length">

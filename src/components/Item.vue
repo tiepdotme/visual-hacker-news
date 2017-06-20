@@ -1,7 +1,7 @@
 <template>
   <li class="news-item">
     <div class="img-container" :style="{backgroundColor:randomColor}">
-      <a :href="item.url" target="_blank" v-if="item.url">
+      <a :href="item.url" target="_blank" rel="noopener" v-if="item.url">
         <img v-lazy="imgUrl" src="/public/empty.png" :key="imgUrl" :alt="item.title ">
       </a>
     </div>
@@ -9,7 +9,7 @@
       <span class="title">
         <template v-if="item.url">
           <span class="host"> ({{ item.url | host }})</span> <br> 
-          <a :href="item.url" target="_blank">{{ item.title }}</a> 
+          <a :href="item.url" target="_blank" rel="noopener">{{ item.title }}</a> 
           
         </template>
         <template v-else>
@@ -121,7 +121,7 @@ img[lazy=error] {
 img[lazy=loaded] {
   /*your style here*/
 }
-@media (max-width: 768px) {
+@media (max-width: 980px) {
   .img-container {
     width: 350px;
     height: 350px;

@@ -7,7 +7,7 @@
       <router-link to="/top">Top</router-link>
       <router-link to="/new">New</router-link>
       <router-link to="/show">Show</router-link>
-      <a class="github" href="https://github.com/valentinvieriu/visual-hacker-news" target="_blank">
+      <a class="github" href="https://github.com/valentinvieriu/visual-hacker-news" target="_blank" rel="noopener">
         Built with Vue.js
       </a>
     </div>

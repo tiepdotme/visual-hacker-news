@@ -169,7 +169,7 @@ export default {
   opacity: 0;
   transform: translate(30px, 0);
 }
-@media (max-width: 768px) {
+@media (max-width: 980px) {
   .news-list {
     margin: 10px 0;
   }

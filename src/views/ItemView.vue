@@ -2,7 +2,7 @@
   <div class="item-view" v-if="item">
     <template v-if="item">
       <div class="item-view-header">
-        <a :href="item.url" target="_blank">
+        <a :href="item.url" target="_blank" rel="noopener">
           <h1>{{ item.title }}</h1>
         </a>
         <span v-if="item.url" class="host">
@@ -12,13 +12,13 @@
           {{ item.score }} points
           | by <router-link :to="'/user/' + item.by">{{ item.by }}</router-link>
           {{ item.time | timeAgo }} ago
-          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" class="vote">[ vote ]</a>
+          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" rel="noopener" class="vote">[ vote ]</a>
         </p>
       </div>
       <div class="item-view-comments">
         <p class="item-view-comments-header">
           {{ item.kids ? item.descendants + ' comments' : 'No comments yet.'}}
-          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" class="add-comment">[+] Add Comment</a>
+          <a :href="'https://news.ycombinator.com/item?id='+item.id" target="_blank" rel="noopener" class="add-comment">[+] Add Comment</a>
           <spinner :show="loading"></spinner>
         </p>
         <ul v-if="!loading" class="comment-children">
