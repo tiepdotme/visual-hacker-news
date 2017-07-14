@@ -15,7 +15,7 @@ services:
       REDIS_URL: ${REDIS_URL}
       THUMB_BASE_URL: ${THUMB_BASE_URL}
     labels:
-        - "traefik.frontend.rule=Host:${DOMAIN}.${TLD}"
+        - "traefik.frontend.rule=Host:${DOMAIN}.${TLD},hnews.beer42.de"
         - "traefik.port=${PORT}"
     # ports:
     #   - '${PORT}:${PORT}'
