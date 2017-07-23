@@ -2,7 +2,10 @@
   <li class="news-item">
     <div class="img-container" :style="{backgroundColor:randomColor}">
       <a :href="item.url" target="_blank" rel="noopener" v-if="item.url">
-        <img v-lazy="imgUrl" src="/public/empty.png" :key="imgUrl" :alt="item.title ">
+        <img 
+          v-lazy="imgUrl" 
+          :key="imgUrl.src" 
+          :alt="item.title ">
       </a>
     </div>
     <div class="meta-container">
@@ -42,7 +45,11 @@ export default {
   props: ['item'],
   computed: {
     imgUrl() {
-      return `/thumbnail/?url=${encodeURIComponent(this.item.url)}`;
+      const baseUrl = `/thumbnail/?url=${encodeURIComponent(this.item.url)}&quality=33&width=1280&height=1280&resize=450x450`;
+      return {
+        src: `${baseUrl}`,
+        loading: `${baseUrl}&thumb=true`,
+      };
       // return `/thumbnail/?url=${encodeURIComponent(this.item.url)}&width=450&height=450&screen=1024&format=jpg`;
     },
     randomColor() {

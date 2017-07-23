@@ -23,7 +23,22 @@ Vue.mixin({
   }
 })
 
-Vue.use(VueLazyload)
+Vue.use(VueLazyload, {
+  preLoad: 2.3,
+  // the default is ['scroll', 'wheel', 'mousewheel', 'resize',
+  // 'animationend', 'transitionend', 'touchmove']
+  listenEvents: ['scroll', 'touchmove'],
+  filter: {
+    webp(listener, options) {
+      const isThumb = /thumbnail/;
+      if (!options.supportWebp) return;
+      if (isThumb.test(listener.src)) {
+        const sep = (listener.src.indexOf('?') === -1) ? '?' : '&';
+        listener.src += `${sep}format=webp`;
+      }
+    },
+  },
+});
 
 const { app, router, store } = createApp()
 

@@ -48,7 +48,7 @@ if (isProd) {
   renderer = createRenderer(bundle, {
     clientManifest
   })
-  require('./fetchImages').run();
+  //require('./fetchImages').run();
 } else {
   // In development: setup the dev server with watch and hot-reload,
   // and create a new renderer on bundle / index template update.
@@ -88,10 +88,10 @@ function render (req, res) {
   // We cache it for 15 min at the cdn level
   res.header({ 'Cache-Control': 'public, max-age='+15*60 })
   // The next section is for http2 push
-  // if (isProd) {
-  //   res.setHeader("Link",clientManifest.all.map( item => `</dist/${item}>; rel=preload; as=${item.includes('css') ? 'style' : 'script'}`).join(','))
-  //   // res.write('<!DOCTYPE html>')
-  // }
+  if (isProd) {
+    res.setHeader("Link",clientManifest.all.map( item => `</dist/${item}>; rel=preload; as=${item.includes('css') ? 'style' : 'script'}`).join(','))
+    // res.write('<!DOCTYPE html>')
+  }
 
   const handleError = err => {
     if (err.url) {
