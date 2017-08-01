@@ -139,11 +139,14 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 470px);
+  grid-gap: 12px;
 }
 .news-list ul li {
   flex: 0 1 450px;
   min-width: 1px;
-  margin: 10px;
+  /* margin: 10px; */
 }
 .slide-left-enter,
 .slide-right-leave-active {
@@ -170,12 +173,14 @@ export default {
   transform: translate(30px, 0);
 }
 @media (max-width: 980px) {
-  .news-list {
-    margin: 10px 0;
+  .news-list ul{
+    margin: 0px 0;
+    grid-template-columns: repeat(auto-fill, 370px);
+    grid-gap: 10px;
   }
   .news-list ul li {
     flex: 0 1 350px;
-    margin: 5px;
+    /* margin: 5px; */
   }
 }
 </style>

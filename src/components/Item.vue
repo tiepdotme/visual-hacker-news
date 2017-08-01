@@ -48,7 +48,8 @@ export default {
       const baseUrl = `/thumbnail/?url=${encodeURIComponent(this.item.url)}&quality=33&width=1280&height=1280&resize=450x450`;
       return {
         src: `${baseUrl}`,
-        loading: `${baseUrl}&thumb=true`,
+        // loading: `${baseUrl}&thumb=true`,
+        loading: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
       };
       // return `/thumbnail/?url=${encodeURIComponent(this.item.url)}&width=450&height=450&screen=1024&format=jpg`;
     },

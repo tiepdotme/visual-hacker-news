@@ -23,7 +23,8 @@
                 "NODE_ENV": "production",
                 "MICRO_CACHE":"false",
                 "PORT":"9000",
-                "THUMB_BASE_URL":"https://hnews.xyz/thumbnail/"
+                "THUMB_BASE_URL":"http://localhost:3000/",
+                "REDIS_URL": "redis://h:15b92993122b3e149d7aa8e432f96d72@redis.beer42.de:6379"
             }
         },
         {

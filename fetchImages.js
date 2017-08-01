@@ -20,20 +20,20 @@ function getNewsUrl(newsItem) {
   	queryRef.on("value", function(snapshot) {
   		var result = snapshot.val();
   	  // console.log(result);
-			if ( result && result.title.includes('[pdf]')) {
-				reject(new Error('Looks like a pdf'));
+			if ( result && result.title && result.title.includes('[pdf]')) {
+				reject('Looks like a pdf');
 			}
   		if (result && result.url) {
 	  		resolve({
 					title:result.title,
 					url:result.url
-			});
+				});
   		} else {
-  			reject(new Error('No url detected'));
+  			reject('No url detected');
   		}
   	}, function (errorObject) {
   	  console.log("The read failed: " + errorObject.code);
-  	  reject(new Error(result));
+  	  reject(errorObject);
   	});
   });
 }
@@ -44,16 +44,18 @@ function queScreenshot(snapshot) {
 	// console.log(arguments);
 	getNewsUrl(inewsId).then(function({ title, url }){
 		if (!url || url==='' || /\.pdf/.test(url)) return;
-		const job = queue.create('cacheImage', { 
+		const job = queue.create('cacheImage', {
 			title,
 			query: {
 				url,
-				width: 450,
-				height: 450
+				quality: "33",
+				width: "1280",
+				height: "1280",
+				resize: '450x450',
 			}
 		});
 		job.removeOnComplete( true )
-		// .ttl(60*1000)
+		.ttl(3*60*1000)
 		// .delay(100)
 		.priority('low')
 		.attempts(3)
@@ -63,7 +65,7 @@ function queScreenshot(snapshot) {
 		});
 
 	}).catch((error)=>{
-		console.log(error.message);
+		console.error(`ERROR=getNewsUrl ${error.message}`);
 	});
 }
 

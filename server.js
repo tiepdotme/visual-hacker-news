@@ -48,7 +48,7 @@ if (isProd) {
   renderer = createRenderer(bundle, {
     clientManifest
   })
-  //require('./fetchImages').run();
+  require('./fetchImages').run();
 } else {
   // In development: setup the dev server with watch and hot-reload,
   // and create a new renderer on bundle / index template update.
@@ -140,7 +140,7 @@ app.use('/thumbnail/', (req, res) => {
         res.sendStatus(404);
         return;
     }
-    let imageUrl=process.env.THUMB_BASE_URL+req.originalUrl.split('/thumbnail/')[1];
+    let imageUrl=process.env.THUMB_BASE_URL+'/capture/' + req.originalUrl.split('/thumbnail/')[1];
       req.pipe(request(imageUrl).on('error', (error) => {
       res.sendStatus(404);
       return;
