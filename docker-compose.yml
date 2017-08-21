@@ -2,7 +2,7 @@ version: '2'
 services:
   hnews:
     container_name: hnews
-    # image: registry.heroku.com/visual-hacker-news/web
+    image: valentinvieriu/hnews:1.0.1
     build: .
     restart: always
     # mem_limit: 2G

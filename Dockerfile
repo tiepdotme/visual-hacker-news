@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:8.3.0-alpine
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
@@ -6,9 +6,11 @@ ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
 # default to port 80 for node, and 5858 or 9229 for debug
-ARG PORT=80
-ENV PORT $PORT
-EXPOSE $PORT 5858 9229
+# ARG PORT=80
+# ENV PORT $PORT
+# EXPOSE $PORT 5858 9229
+
+EXPOSE 3000
 
 # check every 30s to ensure this service returns HTTP 200
 # HEALTHCHECK CMD curl -fs http://localhost:$PORT/ || exit 1
