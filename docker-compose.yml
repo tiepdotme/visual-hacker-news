@@ -2,7 +2,7 @@ version: '2'
 services:
   hnews:
     container_name: hnews
-    image: valentinvieriu/hnews:1.0.2
+    image: valentinvieriu/hnews:1.0.3
     build: .
     restart: always
     # mem_limit: 2G
