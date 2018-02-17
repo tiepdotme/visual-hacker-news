@@ -1,4 +1,4 @@
-FROM node:8.4.0-alpine
+FROM node:9.5.0-alpine
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
