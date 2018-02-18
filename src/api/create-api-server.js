@@ -1,4 +1,6 @@
-import Firebase from 'firebase'
+// import Firebase from 'firebase'
+const Firebase = require('firebase/app');
+require('firebase/database');
 import LRU from 'lru-cache'
 
 export function createAPI ({ config, version }) {

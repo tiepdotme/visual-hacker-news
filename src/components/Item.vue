@@ -39,13 +39,14 @@
 
 <script>
 import { timeAgo } from '../util/filters'
+const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
   name: 'news-item',
   props: ['item'],
   computed: {
     imgUrl() {
-      const baseUrl = `/thumbnail/?url=${encodeURIComponent(this.item.url)}&quality=33&width=1280&height=1280&resize=450x450`;
+      const baseUrl = `${isDev ? 'https://hnews.xyz/thumbnail' : '/thumbnail'}/?url=${encodeURIComponent(this.item.url)}&quality=33&width=1280&height=1280&resize=450x450`;
       return {
         src: `${baseUrl}`,
         // loading: `${baseUrl}&thumb=true`,

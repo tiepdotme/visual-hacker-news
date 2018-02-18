@@ -1,12 +1,12 @@
 "use strict";
-var firebase = require('firebase');
+var firebase = require('firebase/app');
 var url      = require('url');
 var kue      = require('kue');
 var queue  = kue.createQueue({
 	jobEvents: false,
 	redis: process.env.REDIS_URL
 });
-
+require('firebase/database');
 var fetchApp = firebase.initializeApp({
   databaseURL: 'https://hacker-news.firebaseio.com'
 },'fetchApp');
