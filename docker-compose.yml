@@ -89,7 +89,7 @@ services:
       REDIS_URL: ${REDIS_URL}
 
   hnews:
-    image: 'valentinvieriu/hnews:1.0.6'
+    image: 'valentinvieriu/hnews:1.0.7'
     build: .
     restart: 'always'
     mem_limit: '512MB'
