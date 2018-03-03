@@ -49,7 +49,6 @@ if (isProd) {
   renderer = createRenderer(bundle, {
     clientManifest
   })
-  require('./fetchImages').run();
 } else {
   // In development: setup the dev server with watch and hot-reload,
   // and create a new renderer on bundle / index template update.
@@ -62,7 +61,7 @@ const serve = (path, cache) => express.static(resolve(path), {
   maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
 })
 
-app.use(favicon('./public/logo-48.png'))
+app.use(favicon(path.join(__dirname, 'public', 'logo-48.png')))
 app.use('/dist', serve('./dist', true))
 app.use('/public', serve('./public', true))
 app.use('/manifest.json', serve('./manifest.json', true))
@@ -146,6 +145,9 @@ app.use('/thumbnail/', (req, res) => {
       res.sendStatus(404);
       return;
       })).pipe(res)
+});
+app.use('/healthcheck/', (req, res) => {
+  res.sendStatus(200);
 });
 app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))

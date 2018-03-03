@@ -79,3 +79,4 @@ module.exports = {
 	run        : run,
 	getNewsUrl :getNewsUrl
 };
+run();

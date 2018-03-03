@@ -18,7 +18,6 @@ rm -rf /tmp/*
 
 FROM node:9.7.1-alpine
 # copy in our source code last, as it changes the most
-RUN apk add --no-cache curl
 WORKDIR /usr/src/app
 ENV PATH /usr/src/node_modules/.bin:$PATH
 
@@ -40,4 +39,4 @@ EXPOSE $PORT 5858 9229
 # so that signals are passed properly. Note the code in index.js is needed to catch Docker signals
 # using node here is still more graceful stopping then npm with --init afaik
 # I still can't come up with a good production way to run with npm and graceful shutdown
-CMD [ "node", "server.js'" ]
+CMD [ "node", "index.js'" ]

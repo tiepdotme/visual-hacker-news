@@ -1,0 +1,16 @@
+{
+  "name": "fetchImages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fetchImages.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^4.10.1",
+    "kue": "^0.11.6"
+  }
+}
