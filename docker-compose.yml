@@ -1,35 +1,51 @@
 version: '2.3'
 services:
   local-redis:
-    image: 'redis:4.0.1-alpine'
+    image: 'redis:4.0.8-alpine'
     restart: 'always'
-    mem_limit: '1G'
+    mem_limit: '256M'
     command: 'redis-server --requirepass ${REDIS_PASSWORD}'
     volumes:
       - '${ROOT_FOLDER}/redis/data:/data'
-  # kue:
-  #   image: 'valentinvieriu/booksclub:kue-1.0.1'
-  #   restart: 'always'
-  #   mem_limit: '512M'
-  #   depends_on:
-  #     - local-redis
-  #   environment:
-  #     NODE_ENV: 'production'
-  #     REDIS_URL: '${REDIS_URL}'
+    # ports:
+    #   - '6379:6379'
+  kue:
+    image: 'valentinvieriu/booksclub:kue-1.0.1'
+    restart: 'always'
+    mem_limit: '128M'
+    depends_on:
+      - local-redis
+    environment:
+      NODE_ENV: 'production'
+      REDIS_URL: '${REDIS_URL}'
+    # ports:
+    #   - '3001:9000'
 
-  chrome-headless:
-    image: 'valentinvieriu/chrome-headless:64.0.3282.167-1'
+  portainer:
+    image: 'portainer/portainer:1.16.3'
     restart: 'always'
-    shm_size: '1G'
-    restart: 'always'
-    mem_limit: '1G'
-    cap_add: 
-      - 'SYS_ADMIN'
-    command: '--ignore-certificate-errors --no-sandbox --headless --disable-gpu --hide-scrollbars -incognito --window-size=1280,1280 --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222'
+    mem_limit: '64M'
+    command: '--no-auth'
     volumes: 
-      - '${ROOT_FOLDER}/chromedata:/data'
-    # environment: 
-    #   VIRTUAL_HOST: 'ws://chrome-headless.${TLD}'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '${ROOT_FOLDER}/portainer/data:/data'
+    environment:
+      NODE_ENV: 'production'
+    # ports:
+    #   - '3002:9000'
+  # chrome-headless:
+  #   image: 'valentinvieriu/chrome-headless:64.0.3282.167-1'
+  #   restart: 'always'
+  #   shm_size: '1G'
+  #   restart: 'always'
+  #   mem_limit: '1G'
+  #   cap_add: 
+  #     - 'SYS_ADMIN'
+  #   command: '--ignore-certificate-errors --no-sandbox --headless --disable-gpu --hide-scrollbars -incognito --window-size=1280,1280 --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222'
+  #   volumes: 
+  #     - '${ROOT_FOLDER}/chromedata:/data'
+  #   # environment: 
+  #   #   VIRTUAL_HOST: 'ws://chrome-headless.${TLD}'
 
   # node-screenshots:
   #   image: 'valentinvieriu/node-screenshots:1.0.4'
@@ -53,18 +69,25 @@ services:
   #     - '${ROOT_FOLDER}/screenshots:/app/screenshots'
 
   node-screenshots:
-    image: 'valentinvieriu/node-screenshots:1.0.5'
+    image: 'valentinvieriu/node-screenshots:1.2.0'
     restart: 'always'
     depends_on:
       - local-redis
-      - chrome-headless
-    mem_limit: '1G'
+      # - chrome-headless
+    cap_add: 
+      - 'SYS_ADMIN'
+    # user: pptruser
+    shm_size: '2G'
+    restart: 'always'
+    mem_limit: '1500MB'
+    memswap_limit: '5G'
     environment:
       FILES_CLEAN_TIMEOUT: '10'
-      WATCH_QUEUE: '1'
+      WATCH_QUEUE: '6'
+      WAIT_UNTIL: 'networkidle0'
       NODE_ENV: 'production'
       REDIS_URL: '${REDIS_URL}'
-      REMOTE_HOST: 'chrome-headless'
+      CHROME_PATH: 'google-chrome'
       PORT: 3000
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3000/healthcheck']
@@ -73,26 +96,28 @@ services:
       retries: 3
     # ports:
     #   - '3000:3000'
+    #   - '9222:9222'
     volumes: 
       - '${ROOT_FOLDER}/screenshots:/usr/src/app/screenshots'
   
   fetch-images:
-    container_name: 'fetch-images'
-    image: 'valentinvieriu/hnews-fetch-images:1.0.1'
+    image: 'valentinvieriu/hnews-fetch-images:1.0.2'
     build: './fetch-images'
     restart: 'always'
-    mem_limit: '128MB'
+    mem_limit: '128M'
     # memswap_limit: 0
+    depends_on:
+      - local-redis
     command: 'node index.js'
     environment:
       NODE_ENV: ${NODE_ENV}
       REDIS_URL: ${REDIS_URL}
 
   hnews:
-    image: 'valentinvieriu/hnews:1.0.7'
+    image: 'valentinvieriu/hnews:1.0.8'
     build: .
     restart: 'always'
-    mem_limit: '512MB'
+    mem_limit: '256M'
     # memswap_limit: 0
     command: 'node server.js'
     environment:

@@ -32,7 +32,7 @@
             "name": "Launch Program",
             "program": "${workspaceRoot}/server",
             "env": {
-                "NODE_ENV": "production",
+                "NODE_ENV": "development",
                 "MICRO_CACHE":"false",
                 "PORT":"9000",
                 "THUMB_BASE_URL":"https://hnews.xyz/thumbnail/"

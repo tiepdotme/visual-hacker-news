@@ -1,13 +1,15 @@
 "use strict";
-var firebase = require('firebase/app');
-var url      = require('url');
-var kue      = require('kue');
-var queue  = kue.createQueue({
+const firebase = require('firebase/app');
+const url      = require('url');
+const kue      = require('kue');
+const http = require('http');
+const port = process.env.PORT || 3000;
+const queue  = kue.createQueue({
 	jobEvents: false,
 	redis: process.env.REDIS_URL
 });
 require('firebase/database');
-var fetchApp = firebase.initializeApp({
+const fetchApp = firebase.initializeApp({
   databaseURL: 'https://hacker-news.firebaseio.com'
 },'fetchApp');
 const api = firebase.database(fetchApp).ref('/v0');
@@ -48,7 +50,7 @@ function queScreenshot(snapshot) {
 			title,
 			query: {
 				url,
-				quality: "33",
+				quality: "75",
 				width: "1280",
 				height: "1280",
 				resize: '450x450',
@@ -79,4 +81,19 @@ module.exports = {
 	run        : run,
 	getNewsUrl :getNewsUrl
 };
-run();
+
+const server = http.createServer((request, response) => {
+  if (request.url.includes('/healthcheck')) {
+    response.statusCode = 201;
+    response.end();
+	}
+});
+server.maxConnections = 10000000;
+server.listen(port, err => {
+  if (err) {
+    console.log('Server Error:', err);
+  }
+
+	run();
+  console.log(`Server is listening on ${port}`);
+});

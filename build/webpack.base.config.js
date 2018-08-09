@@ -3,6 +3,8 @@ const webpack = require('webpack')
 const vueConfig = require('./vue-loader.config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -16,6 +18,9 @@ module.exports = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js'
   },
+  mode: isProd
+    ? 'production'
+    : 'development',
   resolve: {
     alias: {
       'public': path.resolve(__dirname, '../public')
@@ -59,12 +64,12 @@ module.exports = {
   },
   plugins: isProd
     ? [
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-          compress: { warnings: false }
-        }),
         new ExtractTextPlugin({
           filename: 'common.[chunkhash].css'
+        }),
+        new BundleAnalyzerPlugin({
+          analyzerMode: "static",
+          generateStatsFile: true
         })
       ]
     : [

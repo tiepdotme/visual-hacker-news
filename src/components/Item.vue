@@ -46,7 +46,7 @@ export default {
   props: ['item'],
   computed: {
     imgUrl() {
-      const baseUrl = `${isDev ? 'https://hnews.xyz/thumbnail' : '/thumbnail'}/?url=${encodeURIComponent(this.item.url)}&quality=33&width=1280&height=1280&resize=450x450`;
+      const baseUrl = `${isDev ? 'https://hnews.xyz/thumbnail' : '/thumbnail'}/?url=${encodeURIComponent(this.item.url)}&quality=75&width=1280&height=1280&resize=450x450`;
       return {
         src: `${baseUrl}`,
         // loading: `${baseUrl}&thumb=true`,
