@@ -101,7 +101,7 @@ services:
       - '${ROOT_FOLDER}/screenshots:/usr/src/app/screenshots'
   
   fetch-images:
-    image: 'valentinvieriu/hnews-fetch-images:1.0.2'
+    image: 'valentinvieriu/hnews-fetch-images:1.0.3'
     build: './fetch-images'
     restart: 'always'
     mem_limit: '128M'
@@ -114,7 +114,7 @@ services:
       REDIS_URL: ${REDIS_URL}
 
   hnews:
-    image: 'valentinvieriu/hnews:1.0.8'
+    image: 'valentinvieriu/hnews:1.0.9'
     build: .
     restart: 'always'
     mem_limit: '256M'
