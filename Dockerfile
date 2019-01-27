@@ -1,4 +1,4 @@
-FROM node:10-alpine as build
+FROM node:11-alpine as build
 
 
 # set our node environment, either development or production
@@ -16,7 +16,7 @@ npm cache clean --force && \
 rm -rf /tmp/*
 
 
-FROM node:10-alpine
+FROM node:11-alpine
 # copy in our source code last, as it changes the most
 RUN apk add --no-cache curl
 WORKDIR /usr/src/app

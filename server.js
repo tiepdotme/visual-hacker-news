@@ -22,7 +22,7 @@ function createRenderer (bundle, options) {
   return createBundleRenderer(bundle, Object.assign(options, {
     template,
     // for component caching
-    cache: LRU({
+    cache: new LRU({
       max: 1000,
       maxAge: 1000 * 60 * 15
     }),
@@ -69,7 +69,7 @@ app.use('/service-worker.js', serve('./dist/service-worker.js'))
 
 // 1-second microcache.
 // https://www.nginx.com/blog/benefits-of-microcaching-nginx/
-const microCache = LRU({
+const microCache = new LRU({
   max: 100,
   maxAge: 1000
 })
